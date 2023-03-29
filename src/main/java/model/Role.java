@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "roles")
+@org.hibernate.annotations.DynamicUpdate
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,29 +36,6 @@ public class Role {
         this.role = role;
     }
 
-//    public Integer getId() {
-//        return id;
-//    }
-
-//    public void setId(Integer id) {
-//        this.id = id;
-//    }
-
-//    public String getRole() {
-//        return role;
-//    }
-
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
-
-//    public Set<User> getUserSet() {
-//        return userSet;
-//    }
-
-//    public void setUserSet(Set<User> userSet) {
-//        this.userSet = userSet;
-//    }
 
     @Override
     public boolean equals(Object o) {

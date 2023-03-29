@@ -11,6 +11,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@org.hibernate.annotations.DynamicUpdate
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +60,6 @@ public class User {
                 ", name='" + name + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
-//                ", role=" + role +
                 '}';
     }
 }

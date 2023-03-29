@@ -5,8 +5,6 @@ import dao.impl.UserDaoImpl;
 import model.Role;
 import model.User;
 
-import java.util.List;
-import java.util.Set;
 
 public class Main {
     private static final UserDao USER_DAO = new UserDaoImpl();
@@ -41,6 +39,10 @@ public class Main {
 //        USER_DAO.getUsers().forEach(System.out::println);
         System.out.println("--------Удаление роли ---------------------");
         ROLE_DAO.delete(ROLE_DAO.getRoleById(role1.getId()));
+//        USER_DAO.getUsers().forEach(System.out::println);
+        System.out.println("--------Обновление пользователя ---------------------");
+        user.setPassword("Oo1234567890");
+        USER_DAO.update(user);
         USER_DAO.getUsers().forEach(System.out::println);
     }
 }
