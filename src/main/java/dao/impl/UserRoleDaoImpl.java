@@ -1,29 +1,37 @@
 package dao.impl;
 
 import config.HibernateSessionFactoryUtil;
-import dao.UserDao;
+import dao.UserRoleDao;
 import model.Role;
 import model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class UserDaoImpl implements UserDao {
+public class UserRoleDaoImpl implements UserRoleDao {
 
     @Override
-    public void create(User user) {
+    public void createUser(User user) {
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.save(user);
-            session.update(user.getRole());
             transaction.commit();
         }
     }
 
     @Override
-    public void update(User user) {
+    public void createRole(Role role) {
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.save(role);
+            transaction.commit();
+        }
+    }
+
+    @Override
+    public void updateUser(User user) {
+
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.update(user);
@@ -32,45 +40,57 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(int id) {
+        User user;
+
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.delete(user);
-            transaction.commit();
+            user = session.get(User.class, id);
+            if(!(user == null)) {
+                session.remove(user);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public User readById(int id) {
-        User user;
+    public User readUserById(int id) {
+        User user = null;
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             user = session.get(User.class, id);
+            System.out.println(user + " " + user.getRoleList());
             transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return user;
     }
 
     @Override
-    public List<User> getUsers() {
+    public Role readRoleById(int id) {
+        Role role = null;
+        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            role = session.get(Role.class, id);
+            System.out.println(role + " " + role.getUsers());
+            transaction.commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return role;
+    }
+
+    @Override
+    public List<User> readAllUsers() {
         List<User> users;
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             users = session.createQuery("FROM User", User.class).list();
-            transaction.commit();
-        }
-        return users;
-    }
-
-    @Override
-    public List<User> getByRole(Role role) {
-        List<User> users;
-        Integer id = role.getId();
-        try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            Query<User> query = session.createQuery("FROM User WHERE role.id = :id", User.class);
-            query.setParameter("id", id);
-            users = query.getResultList();
+            System.out.println(users);
             transaction.commit();
         }
         return users;

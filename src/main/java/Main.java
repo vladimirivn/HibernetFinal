@@ -1,48 +1,50 @@
-import dao.RoleDao;
-import dao.UserDao;
-import dao.impl.RoleDaoImpl;
-import dao.impl.UserDaoImpl;
+import dao.UserRoleDao;
+import dao.impl.UserRoleDaoImpl;
 import model.Role;
 import model.User;
 
+import java.util.List;
+
 
 public class Main {
-    private static final UserDao USER_DAO = new UserDaoImpl();
-    private static final RoleDao ROLE_DAO = new RoleDaoImpl();
+    private static final UserRoleDao USER_ROLE_DAO = new UserRoleDaoImpl();
 
     public static void main(String[] args) {
 
         Role role = new Role("ADMIN");
         Role role1 = new Role("USER");
+        Role role2 = new Role("GUEST");
 
-        User user = new User(1,"Ivan", "Ivanov", "qwerty", role);
-        User user1 = new User(2,"Sergey", "Sergeev", "qazwsx", role1);
-        User user2 = new User(3,"Petr", "Petrov", "fgfgfgfgfg", role1);
+        USER_ROLE_DAO.createRole(role);
+        USER_ROLE_DAO.createRole(role1);
+        USER_ROLE_DAO.createRole(role2);
 
+        User user = new User(1,"Ivan", "Ivanov", "qwerty",List.of(role));
+        User user1 = new User(2,"Sergey", "Sergeev", "qazwsx",List.of(role1, role2));
+        User user2 = new User(3,"Petr", "Petrov", "fgfgfgfgfg",List.of(role, role2));
 
-        ROLE_DAO.create(role);
-        ROLE_DAO.create(role1);
-        USER_DAO.create(user);
-        USER_DAO.create(user1);
-        USER_DAO.create(user2);
+        USER_ROLE_DAO.createUser(user);
+        USER_ROLE_DAO.createUser(user1);
+        USER_ROLE_DAO.createUser(user2);
 
-//        System.out.println("--------Вывод всех ролей---------------------");
-//        ROLE_DAO.getAll().forEach(System.out::println);
 
 //        System.out.println("--------Вывод всех пользователей без ролей-----------");
-//        USER_DAO.getUsers().forEach(System.out::println);
+//        USER_ROLE_DAO.readAllUsers();
+
+//        System.out.println("--------Вывод пользователя с его ролями-----------------");
+//        USER_ROLE_DAO.readUserById(3);
+//
 //        System.out.println("--------Вывод пользователей по ролям-----------------");
-//        USER_DAO.getByRole(role).forEach(System.out::println);
-//        USER_DAO.getByRole(role1).forEach(System.out::println);
+//        USER_ROLE_DAO.readRoleById(3);
+
 //        System.out.println("--------Удаление пользователя---------------------");
-//        USER_DAO.deleteUser(USER_DAO.readById(user2.getId()));
-//        USER_DAO.getUsers().forEach(System.out::println);
-        System.out.println("--------Удаление роли ---------------------");
-        ROLE_DAO.delete(ROLE_DAO.getRoleById(role1.getId()));
-//        USER_DAO.getUsers().forEach(System.out::println);
-        System.out.println("--------Обновление пользователя ---------------------");
-        user.setPassword("Oo1234567890");
-        USER_DAO.update(user);
-        USER_DAO.getUsers().forEach(System.out::println);
+//        USER_ROLE_DAO.deleteUser(4);
+//        USER_ROLE_DAO.readAllUsers();
+
+          System.out.println("--------Обновление пользователя ---------------------");
+          user.setPassword("11111");
+          user.setRoleList(List.of(role,role1));
+          USER_ROLE_DAO.updateUser(user);
+          USER_ROLE_DAO.readAllUsers();
     }
 }

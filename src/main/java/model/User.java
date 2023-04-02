@@ -3,15 +3,16 @@ package model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.List;
 
-
-@Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+
 @Table(name = "users")
-@org.hibernate.annotations.DynamicUpdate
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,31 +28,32 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @ManyToOne()
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @ManyToMany(cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+            },
+            fetch = FetchType.LAZY)
 
-    public User(String name, String login, String password, Role role) {
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+
+    private List<Role> roleList;
+
+    public User(String name, String login, String password) {
         this.name = name;
         this.login = login;
         this.password = password;
-        this.role = role;
+    }
+    public User(int id, String name, String login, String password) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(role, user.role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, login, password, role);
-    }
 
     @Override
     public String toString() {
